@@ -14,6 +14,7 @@ const Video: React.FC<VideoProps> = ({ id, title, date, excerpt }) => {
           title={title}
           className={'w-full'}
           iframeClassName={'w-full'}
+          loading={'lazy'}
           opts={{
             width: '100%',
             height: '390px',
