@@ -60,10 +60,10 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
           {sortByDate(filterVideosBySelectedTags(videos)).map((video) => (
             <React.Fragment key={video.title}>
               <Video
+                id={video.id}
                 title={video.title}
                 date={format(new Date(video.date), 'MMMM dd, yyyy')}
                 excerpt={video.excerpt}
-                url={video.url}
               />
             </React.Fragment>
           ))}
