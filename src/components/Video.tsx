@@ -5,6 +5,7 @@ const Video: React.FC<VideoProps> = ({ title, date, excerpt, url }) => {
     <div className="bg-white rounded-lg shadow-lg p-4">
       <div className="video-container">
         <iframe
+          loading="lazy"
           src={url}
           title={title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
