@@ -1,5 +1,8 @@
 import type VideoProps from '@/types/Video';
-import YouTube from 'react-youtube';
+import dynamic from 'next/dynamic';
+import type YoutubeProps from 'react-youtube';
+
+const YouTube = dynamic<React.ComponentProps<typeof YoutubeProps>>(() => import('react-youtube').then(mod => mod.default), { ssr: false, loading: () => <p>Loading...</p> });
 
 const Video: React.FC<VideoProps> = ({ id, title, date, excerpt }) => {
   return (
@@ -8,11 +11,12 @@ const Video: React.FC<VideoProps> = ({ id, title, date, excerpt }) => {
         <YouTube
           videoId={id}
           id={id}
+          title={title}
           className={'w-full'}
           iframeClassName={'w-full'}
           opts={{
             width: '100%',
-            height: '220px',
+            height: '390px',
             playerVars: {
               rel: 0,
               autoplay: 0,
