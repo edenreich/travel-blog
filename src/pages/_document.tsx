@@ -1,7 +1,7 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Footer from '@/components/Footer';
 
-function MyDocument(props: any) {
+function MyDocument() {
   return (
     <Html lang="en">
       <Head>
