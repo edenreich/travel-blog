@@ -1,0 +1,6 @@
+apiVersion: v2
+name: travel-blog
+description: A Helm chart for my travel blog
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
