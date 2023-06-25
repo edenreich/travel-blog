@@ -34,7 +34,7 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
           url={url}
           title={title}
           className="w-full"
-          controls={false}
+          controls={true}
           width="100%"
           height="116vh"
         />
