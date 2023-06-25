@@ -1,28 +1,42 @@
 import type VideoProps from '@/types/Video';
 import dynamic from 'next/dynamic';
-import type YoutubeProps from 'react-youtube';
+import React, { useRef, useEffect, useState } from 'react';
 
-const YouTube = dynamic<React.ComponentProps<typeof YoutubeProps>>(() => import('react-youtube').then(mod => mod.default), { ssr: false, loading: () => <p>Loading...</p> });
+const ReactPlayer = dynamic(() => import('react-player/youtube'), { ssr: false });
 
-const Video: React.FC<VideoProps> = ({ id, title, date, excerpt }) => {
+const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
+  const videoWrapperRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLDivElement>;
+  const videoRef = useRef<typeof ReactPlayer>() as React.MutableRefObject<typeof ReactPlayer>;
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    });
+    observer.observe(videoWrapperRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4">
-      <div className="video-container">
-        <YouTube
-          videoId={id}
-          id={id}
+    <div className="bg-white rounded-lg shadow-lg md:p-2 lg:p-4 mt-4">
+      <div ref={videoWrapperRef} className="video-container">
+        <ReactPlayer
+          playing={isVisible}
+          ref={videoRef}
+          url={url}
           title={title}
-          className={'w-full'}
-          iframeClassName={'w-full'}
-          loading={'lazy'}
-          opts={{
-            width: '100%',
-            height: '390px',
-            playerVars: {
-              rel: 0,
-              autoplay: 0,
-            },
-          }}
+          className="w-full"
+          controls={false}
+          width="100%"
+          height="116vh"
         />
       </div>
       <div className="p-4">
