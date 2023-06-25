@@ -1,8 +1,8 @@
 interface Video {
+  id: string;
   title: string;
   date: string;
   excerpt: string;
-  url: string;
   tags?: string;
 };
 

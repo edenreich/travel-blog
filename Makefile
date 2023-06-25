@@ -44,14 +44,14 @@ build: .npm .nodejs .version-required
 package: .docker
 	docker build \
 		-t ghcr.io/edenreich/$(APP_NAME):latest \
-		-t ghcr.io/edenreich/$(APP_NAME):${TAG} \
+		-t ghcr.io/edenreich/$(APP_NAME):$(TAG) \
 		--cache-from ghcr.io/edenreich/$(APP_NAME):latest .
 	docker images
 
 .PHONY: push
 push: .docker
 	docker push ghcr.io/edenreich/$(APP_NAME):latest
-	docker push ghcr.io/edenreich/$(APP_NAME):${TAG}
+	docker push ghcr.io/edenreich/$(APP_NAME):$(TAG)
 
 .PHONY: clean
 clean:
