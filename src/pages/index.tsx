@@ -60,7 +60,7 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
           {sortByDate(filterVideosBySelectedTags(videos)).map((video) => (
             <React.Fragment key={video.title}>
               <Video
-                id={video.id}
+                url={video.url}
                 title={video.title}
                 date={format(new Date(video.date), 'MMMM dd, yyyy')}
                 excerpt={video.excerpt}
@@ -74,7 +74,8 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
 };
 
 async function fetchVideos(): Promise<VideoProps[]> {
-  return JSON.parse(fs.readFileSync('videos/youtube.json', { encoding: 'utf-8' })) as unknown as VideoProps[];
+  const youtubeVideos = JSON.parse(fs.readFileSync('videos/youtube.json', { encoding: 'utf-8' })) as unknown as VideoProps[];
+  return youtubeVideos;
 }
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
