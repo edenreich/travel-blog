@@ -8,6 +8,7 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
   const videoWrapperRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLDivElement>;
   const videoRef = useRef<typeof ReactPlayer>() as React.MutableRefObject<typeof ReactPlayer>;
   const [isVisible, setIsVisible] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -25,11 +26,22 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    updateScreenWidth();
+
+    window.addEventListener('resize', updateScreenWidth);
+
+    return () => window.removeEventListener('resize', updateScreenWidth);
+  }, []);
+
   return (
     <div className="bg-white rounded-lg shadow-lg md:p-2 lg:p-4 mt-4">
       <div ref={videoWrapperRef} className="video-container">
         <ReactPlayer
-          playing={isVisible}
+          playing={isVisible && screenWidth < 768}
           ref={videoRef}
           url={url}
           title={title}
