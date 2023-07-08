@@ -52,7 +52,7 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
             className="w-full"
             controls={true}
             width="100%"
-            height="116vh"
+            height="100vh"
           />
         </div>
         <div className="p-4">
