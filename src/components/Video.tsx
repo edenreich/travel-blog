@@ -14,7 +14,6 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
     typeof ReactPlayer
   >;
   const [isVisible, setIsVisible] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -32,17 +31,6 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const updateScreenWidth = () => {
-      setScreenWidth(window.innerWidth);
-    };
-    updateScreenWidth();
-
-    window.addEventListener('resize', updateScreenWidth);
-
-    return () => window.removeEventListener('resize', updateScreenWidth);
-  }, []);
-
   return (
     <div
       ref={videoWrapperRef}
@@ -50,16 +38,18 @@ const Video: React.FC<VideoProps> = ({ url, title, date, excerpt }) => {
     >
       <Suspense fallback={<Loading />}>
         <div className="video-container">
-          <ReactPlayer
-            playing={isVisible}
-            ref={videoRef}
-            url={url}
-            title={title}
-            className="w-full"
-            controls={true}
-            width="100%"
-            height="100vh"
-          />
+          {isVisible && (
+            <ReactPlayer
+              playing={isVisible}
+              ref={videoRef}
+              url={url}
+              title={title}
+              className="w-full"
+              controls={true}
+              width="100%"
+              height="100vh"
+            />
+          )}
         </div>
         <div className="p-4">
           <h3 className="text-xl font-bold mb-2">{title}</h3>
