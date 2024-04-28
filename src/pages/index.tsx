@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { getAvailableTags } from '@/utils/getAvailableTags';
 import TagList from '@/components/TagList';
@@ -9,9 +9,33 @@ import fs from 'fs';
 import { format } from 'date-fns';
 
 interface HomeProps {
-  videos: VideoProps[];
-  tags: string[];
+  videos: VideoProps[]
+  tags: string[]
 }
+
+const filterVideosBySelectedTags = (
+  videos: VideoProps[],
+  selectedTags: string[]
+) => {
+  if (selectedTags.length === 0) {
+    return videos;
+  }
+
+  return videos.filter((video: VideoProps) => {
+    return selectedTags.some((selectedTag) =>
+      video?.tags?.includes(selectedTag)
+    );
+  });
+};
+
+const sortByDate = (video: VideoProps[]) => {
+  return video.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    return dateB.getTime() - dateA.getTime();
+  });
+};
 
 const Home: React.FC<HomeProps> = ({ videos, tags }) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -20,24 +44,14 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
     setSelectedTags(selectedTags);
   };
 
-  const filterVideosBySelectedTags = (videos: VideoProps[]) => {
-    if (selectedTags.length === 0) {
-      return videos;
-    }
-
-    return videos.filter((video: VideoProps) => {
-      return selectedTags.some((selectedTag) => video?.tags?.includes(selectedTag));
-    });
-  };
-
-  const sortByDate = (video: VideoProps[]) => {
-    return video.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-
-      return dateB.getTime() - dateA.getTime();
-    });
-  };
+  const filteredVideos = useMemo(
+    () => filterVideosBySelectedTags(videos, selectedTags),
+    [videos, selectedTags]
+  );
+  const sortedVideos = useMemo(
+    () => sortByDate(filteredVideos),
+    [filteredVideos]
+  );
 
   return (
     <>
@@ -52,12 +66,16 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
           This is a blog about my travels around the world.
         </p>
         <div className="container">
-          <TagList tags={tags} selectedTags={selectedTags} onTagClick={handleTagClick} />
+          <TagList
+            tags={tags}
+            selectedTags={selectedTags}
+            onTagClick={handleTagClick}
+          />
         </div>
       </section>
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortByDate(filterVideosBySelectedTags(videos)).map((video) => (
+          {sortedVideos.map((video) => (
             <React.Fragment key={video.title}>
               <Video
                 url={video.url}
@@ -74,7 +92,9 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
 };
 
 async function fetchVideos(): Promise<VideoProps[]> {
-  const youtubeVideos = JSON.parse(fs.readFileSync('videos/youtube.json', { encoding: 'utf-8' })) as unknown as VideoProps[];
+  const youtubeVideos = JSON.parse(
+    fs.readFileSync('videos/youtube.json', { encoding: 'utf-8' })
+  ) as unknown as VideoProps[];
   return youtubeVideos;
 }
 
