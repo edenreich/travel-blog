@@ -3,10 +3,12 @@ import { GetStaticProps } from 'next';
 import { getAvailableTags } from '@/utils/getAvailableTags';
 import TagList from '@/components/TagList';
 import Head from 'next/head';
-import Video from '@/components/Video';
 import type VideoProps from '@/types/Video';
 import fs from 'fs';
 import { format } from 'date-fns';
+import Loading from '@/components/Loading';
+
+const Video = React.lazy(() => import('@/components/Video'));
 
 interface HomeProps {
   videos: VideoProps[]
@@ -75,16 +77,18 @@ const Home: React.FC<HomeProps> = ({ videos, tags }) => {
       </section>
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedVideos.map((video) => (
-            <React.Fragment key={video.title}>
-              <Video
-                url={video.url}
-                title={video.title}
-                date={format(new Date(video.date), 'MMMM dd, yyyy')}
-                excerpt={video.excerpt}
-              />
-            </React.Fragment>
-          ))}
+          <React.Suspense fallback={<Loading />}>
+            {sortedVideos.map((video) => (
+              <React.Fragment key={video.title}>
+                <Video
+                  url={video.url}
+                  title={video.title}
+                  date={format(new Date(video.date), 'MMMM dd, yyyy')}
+                  excerpt={video.excerpt}
+                />
+              </React.Fragment>
+            ))}
+          </React.Suspense>
         </div>
       </section>
     </>
