@@ -1,0 +1,14 @@
+{
+  "name": "travel-blog",
+  "compatibility_date": "2026-08-18",
+  "assets": {
+    "directory": "out",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "travel-blog.eden-reich.com", "custom_domain": true }],
+  "preview_urls": true,
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "invocation_logs": true }
+  }
+}
